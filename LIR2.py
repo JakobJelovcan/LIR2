@@ -65,7 +65,7 @@ class LIR2:
         
 
 
-    def __init__(self, port, slave_address):
+    def __init__(self, port, slave_address) -> None:
         self.sensor = minimalmodbus.Instrument(port, slave_address, minimalmodbus.MODE_RTU, True, False)
         self.matrix = np.zeros((12, 16))
 
