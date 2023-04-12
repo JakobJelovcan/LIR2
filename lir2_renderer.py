@@ -1,7 +1,6 @@
 import numpy as np
 from scipy import ndimage
 import cv2
-import lir2
 
 
 class Renderer:
