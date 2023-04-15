@@ -25,13 +25,13 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, handler)
 
     renderer = lir2_renderer.Renderer()
-    sensor = lir2.LIR2('COM4', 234)
+    sensor = lir2.LIR2('COM3', 234)
     yolo = yolo_classificator.YoloClassificator('./YOLO/yolov3.cfg', './YOLO/yolov3.weights', './YOLO/yolov3.names')
     camera = cv2.VideoCapture(0)
 
     training_data = []
 
-    i = 0
+    i = 1
     while True:
         matrix = sensor.read_samples()
         time.sleep(.8)
@@ -40,5 +40,5 @@ if __name__ == '__main__':
         training_data.append((matrix, objects))
         rendered_image = renderer.render(matrix)
         cv2.imwrite(f'./Images/ThermalImage{i}-Person({str("person" in objects)}).jpg', rendered_image)
+        print(f"Frame: {i}, person: {'person' in objects}")
         i += 1
-        print(i)
