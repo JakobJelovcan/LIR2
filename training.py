@@ -1,5 +1,5 @@
 import lir2
-import lir2_renderer
+from lir2_renderer import Renderer
 import yolo_classificator
 import cv2
 import csv
@@ -24,7 +24,6 @@ if __name__ == '__main__':
 
     signal.signal(signal.SIGINT, handler)
 
-    renderer = lir2_renderer.Renderer()
     sensor = lir2.LIR2('COM3', 234)
     yolo = yolo_classificator.YoloClassificator('./YOLO/yolov3.cfg', './YOLO/yolov3.weights', './YOLO/yolov3.names')
     camera = cv2.VideoCapture(0)
@@ -38,7 +37,7 @@ if __name__ == '__main__':
         (_, camera_image) = camera.read()
         objects = yolo.classify(camera_image)
         training_data.append((matrix, objects))
-        rendered_image = renderer.render(matrix)
+        rendered_image = Renderer.render(matrix)
         cv2.imwrite(f'./Images/ThermalImage{i}-Person({str("person" in objects)}).jpg', rendered_image)
         print(f"Frame: {i}, person: {'person' in objects}")
         i += 1
