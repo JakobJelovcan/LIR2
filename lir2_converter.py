@@ -25,7 +25,7 @@ if __name__ == '__main__':
         next(reader, None)
         for i, row in enumerate(reader):
             data = [float(v) for v in row[0:-1]]
-            person = bool(row[-1])
+            person = row[-1]
             matrix = np.array(np.split(np.array(data), 12))
             image = lir2_renderer.Renderer.render(matrix, colormap)
             cv2.imwrite(os.path.join(directory, f'ThermalImage{i}-Person({person}).jpg'), image)
