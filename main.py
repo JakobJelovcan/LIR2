@@ -5,7 +5,7 @@ import time
 
 if __name__ == '__main__':
     try:
-        lir2 = lir2.LIR2('COM3', 234)
+        lir2 = lir2.LIR2('COM4', 234)
         yolo = yolo_classificator.YoloClassificator('./YOLO/yolov3.cfg', './YOLO/yolov3.weights', './YOLO/yolov3.names')
 
         repeat = True
