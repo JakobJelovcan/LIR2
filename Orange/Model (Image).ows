@@ -16,7 +16,7 @@
 		<node id="12" name="Select Columns" qualified_name="Orange.widgets.data.owselectcolumns.OWSelectAttributes" project_name="Orange3" version="" title="Select Columns (1)" position="(597.0, -103.0)" />
 		<node id="13" name="Predictions" qualified_name="Orange.widgets.evaluate.owpredictions.OWPredictions" project_name="Orange3" version="" title="Predictions" position="(1236.0, -104.0)" />
 		<node id="14" name="Confusion Matrix" qualified_name="Orange.widgets.evaluate.owconfusionmatrix.OWConfusionMatrix" project_name="Orange3" version="" title="Confusion Matrix" position="(1426.0000000000005, -105.42857142857142)" />
-		<node id="15" name="Save Model" qualified_name="Orange.widgets.model.owsavemodel.OWSaveModel" project_name="Orange3" version="" title="Save Model" position="(1049.0000000000005, -180.42857142857144)" />
+		<node id="15" name="Save Model" qualified_name="Orange.widgets.model.owsavemodel.OWSaveModel" project_name="Orange3" version="" title="Save Model" position="(1113.0000000000005, 179.57142857142856)" />
 	</nodes>
 	<links>
 		<link id="0" source_node_id="0" sink_node_id="1" source_channel="Data" sink_channel="Images" enabled="true" />
@@ -2035,8 +2035,8 @@ bGWUiIwNY3Zfc3RyYXRpZmllZJSIjAduX2ZvbGRzlEsDjAluX3JlcGVhdHOUSwOMCnJlc2FtcGxp
 bmeUSwCMBHJvcGWURz+5mZmZmZmajAtzYW1wbGVfc2l6ZZRLCYwTc2F2ZWRXaWRnZXRHZW9tZXRy
 eZRDQgHZ0MsAAwAAAAACOQAAAOwAAAVGAAAC/gAAAjoAAAEKAAAFRQAAAv0AAAAAAAAAAAYAAAAC
 OgAAAQoAAAVFAAAC/ZSMEnNodWZmbGVfc3RyYXRpZmllZJSIjAh1c2Vfcm9wZZSJjAtzY29yZV90
-YWJsZZR9lIwMc2hvd25fc2NvcmVzlI+UKIwCRjGUjANBVUOUjAdDLUluZGV4lIwJUHJlY2lzaW9u
-lIwGUmVjYWxslIwDTVNFlIwEUk1TRZSMAlIylIwCQ0GUjANNQUWUkHOMC19fdmVyc2lvbl9flEsD
+YWJsZZR9lIwMc2hvd25fc2NvcmVzlI+UKIwDQVVDlIwEUk1TRZSMB0MtSW5kZXiUjANNU0WUjAJG
+MZSMAlIylIwGUmVjYWxslIwJUHJlY2lzaW9ulIwCQ0GUjANNQUWUkHOMC19fdmVyc2lvbl9flEsD
 jBBjb250ZXh0X3NldHRpbmdzlF2UKIwVb3Jhbmdld2lkZ2V0LnNldHRpbmdzlIwHQ29udGV4dJST
 lCmBlH2UKIwGdmFsdWVzlH2UKIwPY2xhc3Nfc2VsZWN0aW9ulIwhKE5vbmUsIHNob3cgYXZlcmFn
 ZSBvdmVyIGNsYXNzZXMplEr/////hpSMDGZvbGRfZmVhdHVyZZROSv7///+GlIwVZm9sZF9mZWF0
@@ -4641,8 +4641,8 @@ AABLAmr8IwAASwJ1dWJldS4=
 		<properties node_id="13" format="pickle">gASVqAIAAAAAAAB9lCiMEmNvbnRyb2xBcmVhVmlzaWJsZZSIjBNzYXZlZFdpZGdldEdlb21ldHJ5
 lENCAdnQywADAAD/////////+QAABgAAAAMwAAACugAAAYwAAATsAAACsgAAAAACAAAABgAAAAAA
 AAAAFwAABf8AAAMvlIwJc2VsZWN0aW9ulF2UjAtzaG93X3Njb3Jlc5SIjAtzY29yZV90YWJsZZR9
-lIwMc2hvd25fc2NvcmVzlI+UKIwCRjGUjANBVUOUjAdDLUluZGV4lIwJUHJlY2lzaW9ulIwGUmVj
-YWxslIwDTVNFlIwEUk1TRZSMAlIylIwCQ0GUjANNQUWUkHOMC19fdmVyc2lvbl9flEsBjBBjb250
+lIwMc2hvd25fc2NvcmVzlI+UKIwDQVVDlIwEUk1TRZSMB0MtSW5kZXiUjANNU0WUjAJGMZSMAlIy
+lIwGUmVjYWxslIwJUHJlY2lzaW9ulIwCQ0GUjANNQUWUkHOMC19fdmVyc2lvbl9flEsBjBBjb250
 ZXh0X3NldHRpbmdzlF2UKIwVb3Jhbmdld2lkZ2V0LnNldHRpbmdzlIwHQ29udGV4dJSTlCmBlH2U
 KIwGdmFsdWVzlH2UKIwXc2hvd19wcm9iYWJpbGl0eV9lcnJvcnOUiIwPc2hvd19yZWdfZXJyb3Jz
 lEsBjAtzaG93bl9wcm9ic5RLAYwMdGFyZ2V0X2NsYXNzlIwWKEF2ZXJhZ2Ugb3ZlciBjbGFzc2Vz
@@ -4653,7 +4653,7 @@ bl9wcm9ic5RLAYwMdGFyZ2V0X2NsYXNzlGgsjAtzY29yZV90YWJsZZR9lGgVSwF1aCWMBHRydWWU
 hZR1YmV1Lg==
 </properties>
 		<properties node_id="14" format="pickle">gASVogEAAAAAAAB9lCiMEmFwcGVuZF9wcmVkaWN0aW9uc5SIjBRhcHBlbmRfcHJvYmFiaWxpdGll
-c5SJjAphdXRvY29tbWl0lIiMEmNvbnRyb2xBcmVhVmlzaWJsZZSIjBNzYXZlZFdpZGdldEdlb21l
+c5SIjAphdXRvY29tbWl0lIiMEmNvbnRyb2xBcmVhVmlzaWJsZZSIjBNzYXZlZFdpZGdldEdlb21l
 dHJ5lENCAdnQywADAAAAAAGIAAAA0AAABHcAAAJCAAABiQAAAO4AAAR2AAACQQAAAAAAAAAABgAA
 AAGJAAAA7gAABHYAAAJBlIwQc2VsZWN0ZWRfbGVhcm5lcpSMB2NvcHlyZWeUjA5fcmVjb25zdHJ1
 Y3RvcpSTlIwIYnVpbHRpbnOUjARsaXN0lJOUaA0ph5RSlEsBYYwRc2VsZWN0ZWRfcXVhbnRpdHmU
@@ -4661,7 +4661,7 @@ SwCMC19fdmVyc2lvbl9flEsBjBBjb250ZXh0X3NldHRpbmdzlF2UjBVvcmFuZ2V3aWRnZXQuc2V0
 dGluZ3OUjAdDb250ZXh0lJOUKYGUfZQojAZ2YWx1ZXOUfZQojAlzZWxlY3Rpb26Uj5RoEUsBdYwH
 Y2xhc3Nlc5SMBHRydWWUjAVmYWxzZZSGlHViYXUu
 </properties>
-		<properties node_id="15" format="literal">{'auto_save': False, 'controlAreaVisible': True, 'filter': 'Pickled model (*.pkcls)', 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x03\x00\x00\x00\x00\x02\x9c\x00\x00\x01K\x00\x00\x03d\x00\x00\x01\xc8\x00\x00\x02\x9d\x00\x00\x01i\x00\x00\x03c\x00\x00\x01\xc7\x00\x00\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x02\x9d\x00\x00\x01i\x00\x00\x03c\x00\x00\x01\xc7', 'stored_name': 'SVM.pkcls', 'stored_path': '.', '__version__': 1}</properties>
+		<properties node_id="15" format="literal">{'auto_save': False, 'controlAreaVisible': True, 'filter': 'Pickled model (*.pkcls)', 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x03\x00\x00\x00\x00\x02\x9c\x00\x00\x01K\x00\x00\x03\x87\x00\x00\x01\xc8\x00\x00\x02\x9d\x00\x00\x01i\x00\x00\x03\x86\x00\x00\x01\xc7\x00\x00\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x02\x9d\x00\x00\x01i\x00\x00\x03\x86\x00\x00\x01\xc7', 'stored_name': 'SVM(Image).pkcls', 'stored_path': '.', '__version__': 1}</properties>
 	</node_properties>
 	<session_state>
 		<window_groups />
