@@ -6,7 +6,7 @@ import csv
 import signal
 import time
 
-def handler(signum, frame):
+def handler(_0, _1):
     save_to_csv(training_data)
     exit(0)
 
@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     signal.signal(signal.SIGINT, handler)
 
-    sensor = lir2.LIR2('COM4', 234)
+    sensor = lir2.LIR2('COM3', 234)
     yolo = yolo_classificator.YoloClassificator('./YOLO/yolov3.cfg', './YOLO/yolov3.weights', './YOLO/yolov3.names')
     camera = cv2.VideoCapture(0)
 
