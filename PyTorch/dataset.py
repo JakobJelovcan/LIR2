@@ -8,8 +8,8 @@ class CSVDataset(Dataset):
         #Read the content of the csv file in to a pandoc dataframe
         df = read_csv(path)
 
-        #Extract the 2D matrix values and convert them to float32 (numpy array)
-        self.values = df.values[:, :-1].astype('float32')
+        #Convert each row in to a 3D matrix of float32 values. Resulting matrix has a depth of one (one color channel), width of 16 and height of 12
+        self.values = [row.reshape((1, 12, 16)) for row in df.values[:, :-1].astype('float32')]
 
         #Encode the target clases as numeric values and convert them to float32. Then reshape them in to a 2D matrix with one column
         self.classes = LabelEncoder().fit_transform(df.values[:, -1]).astype('float32').reshape((df.shape[0], 1))
