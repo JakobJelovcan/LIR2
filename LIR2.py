@@ -6,33 +6,36 @@ import serial
 
 
 class LIR2:
-    def read_firmware_version(self):
+    def read_firmware_version(self) -> str:
         '''Read the firmware version of the sensor
+
         Parameters:
         Returns:
-            firmware_version (str): Firmware version'''
-
+            firmware_version (str): Firmware version
+        '''
         raw = str(self.sensor.read_register(0, 0, 4))
         return f"Firmware version: {raw[:2]}.{raw[2:]}"
 
-    def read_sample(self, sample):
-        '''Read a sample from the sensor
+    def read_sample(self, sample:int) -> int:
+        '''Read the specified sample from the sensor
+
         Parameters:
             sample (int): index of the pixel from which the sample should be taken (starts with 0)
         Returns:
-            sample (float): Temperature sample from the specified pixel in °C'''
-
+            sample (float): Temperature sample from the specified pixel in °C
+        '''
         try:
             return self.sensor.read_register(9 + sample, 0, 4) / 100
         except IOError:
             return -1
 
-    def read_samples(self):
-        '''Read samples from all 192 pixels of the sensor.
+    def read_samples(self) -> np.ndarray:
+        '''Read samples from all 192 pixels of the sensor
+
         Parameters:
         Returns:
-            samples (np.array): A 16 x 12 array of float values °C'''
-
+            samples (numpy.ndarray): A 16 x 12 array of float values °C
+        '''
         try:
             raw_data = [ val for reg in range(9, 200, 96) for val in self.sensor.read_registers(reg, 96, 4) ]
             self.matrix = np.array(np.split(np.array(raw_data), 12)) / 100
@@ -41,19 +44,50 @@ class LIR2:
             print(e)
             return self.matrix
 
-    def read_raw_light_intensity(self):
+    def read_raw_light_intensity(self) -> int:
+        '''Read raw light intensity from the sensor
+
+        Parameters:
+        Returns:
+            intensity (int): raw light intensity from the sensor
+        '''
         return self.sensor.read_register(201, 0, 4)
 
-    def read_light_intensity(self):
+    def read_light_intensity(self) -> int:
+        '''Read light intensity from the sensor
+
+        Parameters:
+        Returns:
+            intensity (int): scaled light intensity (raw / 100)
+        '''
         return self.sensor.read_register(202, 0, 4) / 100
 
-    def read_filtered_light_intensity(self):
+    def read_filtered_light_intensity(self) -> int:
+        '''Read filtered light intensity
+
+        Parameters:
+        Returns:
+            intensity (int): scaled filtered light intensity (raw / 100)
+        '''
         return self.sensor.read_register(203, 0, 4) / 100
 
-    def read_result_area(self, area):
+    def read_result_area(self, area:int) -> int:
+        '''Reads the specified result area
+
+        Parameters:
+            area (int): index of the area (starts with 0)
+        Returns:
+            res_area (int): scaled result area (raw / 100)
+        '''
         return self.sensor.read_register(204 + area, 0, 4) / 100
 
-    def read_result_areas(self):
+    def read_result_areas(self) -> list:
+        '''Reads result areas
+        
+        Paramaeters:
+        Returns:
+            res_areas (list): a list of scaled result areas (raw / 100)
+        '''
         return [t / 100 for t in self.sensor.read_registers(204, 5, 4)]
     
     def __test_connection(self):
