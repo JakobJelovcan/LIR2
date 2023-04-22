@@ -2,12 +2,13 @@ from sklearn.neural_network import MLPClassifier
 from pandas import read_csv
 from pickle import load
 from pickle import dump
+import numpy as np
 
 class Network:
     def __init__(self):
         self.model = None
 
-    def load(self, path):
+    def load_model(self, path):
         '''Loads the model from a pickle file
 
         Parameters:
@@ -18,7 +19,7 @@ class Network:
         with open(path, 'rb') as file:
             self.model = load(file)
 
-    def store(self, path):
+    def store_model(self, path):
         '''Stores the model in to a pickle file
 
         Parameters:
@@ -29,7 +30,7 @@ class Network:
         with open(path, 'wb') as file:
             dump(self.model, file)
 
-    def train(self, path):
+    def train(self, path:str) -> None:
         '''Create and train the MLPClassifier using data in the csv file
             
         Parameters:
@@ -43,11 +44,11 @@ class Network:
         y = df.values[:, -1].astype('float32')
         self.model.fit(x, y)
 
-    def predict(self, vec):
+    def predict(self, mat:np.array) -> float:
         '''Predict the class from the input data
         Parameters:
-            vec (array): vector containing the data
+            mat (ndarray): matrix containing the data
         Returns:
-            class (array): array containing the predicted class
+            class (int): integer representing the predicted class
         '''
-        return self.model.predict(vec)
+        return int(self.model.predict(mat.reshape(1, -1))[0])
