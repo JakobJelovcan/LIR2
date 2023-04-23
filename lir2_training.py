@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     signal.signal(signal.SIGINT, handler)
 
-    sensor = lir2.LIR2('COM3', 234)
+    sensor = lir2.LIR2('COM5', 234)
     yolo = yolo_classificator.YoloClassificator('./yolo/yolov3.cfg', './yolo/yolov3.weights', './yolo/yolov3.names')
     camera = cv2.VideoCapture(0)
 
