@@ -24,19 +24,19 @@ def save_training_data(path:str, data:list) -> None:
     '''
     if os.path.exists(path):
         with open(path, 'a') as file:
-            write_to_csv(csv.writer(file), data)
+            write_to_csv(csv.writer(file, lineterminator='\n'), data)
     else:
         with open(path, 'w') as file:
-            writer = csv.writer(file)
+            writer = csv.writer(file, lineterminator='\n')
             writer.writerow([f"x{x}y{y}" for y in range(12) for x in range(16)] + ['person'])
             write_to_csv(writer, data)
 
 
-def write_to_csv(writer:csv._writer, data:list) -> None:
+def write_to_csv(writer, data:list) -> None:
     '''Writes the data into a csv file using the csv._writer
 
     Parameters:
-        writer (csv._writer): writer object used for writing
+        writer (csv.writer): writer object used for writing
         data (list): a list of data to be written
     Returns:
         None
@@ -62,5 +62,7 @@ if __name__ == '__main__':
         (_, camera_image) = camera.read()
         objects = yolo.classify(camera_image)
         training_data.append((matrix, objects))
+        image = Renderer.render(matrix)
+        Renderer.display(image)
         print(f"Frame: {i}, person: {'person' in objects}")
         i += 1
