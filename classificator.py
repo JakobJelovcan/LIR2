@@ -21,7 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('source', help='Path to the file containint the model')
     parser.add_argument('-s', '--serial', help='Serial port onto which the sensor is connected', default='COM3')
     parser.add_argument('-d', '--display', help='Display the thermal image on the screen', action='store_true', default=False)
-    parser.add_argument('-m', '--model', help='Model to be used for classification', choices=['convolutional', 'linear'])
+    parser.add_argument('-m', '--model', help='Model to be used for classification', choices=['convolutional', 'linear'], default='convolutional')
 
     args = parser.parse_args()
     config = vars(args)
