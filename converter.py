@@ -1,12 +1,14 @@
-import lir2_renderer
+from lir2.lir2_renderer import Renderer
 import argparse
 import csv
 import cv2
 import numpy as np
 import os
 
+_PROGRAM_DESCRIPTION = '''The program converts the raw data stored in the csv file in to images.'''
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(prog='Converter', description=_PROGRAM_DESCRIPTION, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('file', help='Path to the CSV file containing data from the LIR2 sensor')
     parser.add_argument('-f', '--format', help='An integer representing a cv2 colormap (-1 for grayscale) https://docs.opencv.org/3.4/d3/d50/group__imgproc__colormap.html')
     parser.add_argument('-d', '--directory', help='Path to the directory in which the images should be stored')
@@ -27,7 +29,7 @@ if __name__ == '__main__':
             data = [float(v) for v in row[0:-1]]
             person = row[-1]
             matrix = np.array(np.split(np.array(data), 12))
-            image = lir2_renderer.Renderer.render(matrix, colormap)
+            image = Renderer.render(matrix, colormap)
             cv2.imwrite(os.path.join(directory, f'ThermalImage{i}-Person({person}).jpg'), image)
 
             

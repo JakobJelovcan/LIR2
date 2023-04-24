@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 from pandas import read_csv
 import numpy as np
 
-class CSVDataset(Dataset):
+class _CSVDataset(Dataset):
     def __init__(self):
         self.values = None
         self.classes = None
@@ -45,7 +45,7 @@ class CSVDataset(Dataset):
         train_size = len(self) - test_size
         return random_split(self, [train_size, test_size])
 
-class CSVDatasetLinear(CSVDataset):
+class CSVDatasetLinear(_CSVDataset):
     def __init__(self, path, device:device):
         super().__init__()
         #Read the content of the csv file in to a pandoc dataframe
@@ -59,7 +59,7 @@ class CSVDatasetLinear(CSVDataset):
         self.classes = from_numpy(classes).type(float).to(device)
 
     
-class CSVDatasetConvolutional(CSVDataset):
+class CSVDatasetConvolutional(_CSVDataset):
     def __init__(self, path, device:device):
         super().__init__()
         #Read the content of the csv file in to a pandoc dataframe

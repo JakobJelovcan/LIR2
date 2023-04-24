@@ -42,7 +42,10 @@ class Renderer:
         Returns:
             None
         '''
-        cv2.destroyAllWindows()
+        try:
+            cv2.destroyAllWindows()
+        except Exception:
+            pass
 
     def is_window_open() -> bool:
         '''Checks if the window is open
