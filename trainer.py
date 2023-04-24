@@ -69,8 +69,21 @@ if __name__ == '__main__':
     cam_index = int(config['camera'])
 
     sensor = LIR2(serial, 234)
-    yolo = YoloClassificator('./yolo/yolov3.cfg', './yolo/yolov3.weights', './yolo/yolov3.names')
     camera = cv2.VideoCapture(cam_index)
+
+    if not os.path.exists('./yolo/yolov3.cfg'):
+        print('YOLO config file is missing.\n it can be downloaded at https://pjreddie.com/darknet/yolo/ (YOLOv3 416)')
+        exit(1)
+
+    if not os.path.exists('./yolo/yolov3.weights'):
+        print('YOLO weights file is missing.\n it can be downloaded at https://pjreddie.com/darknet/yolo/ (YOLOv3 416)')
+        exit(1)
+
+    if not os.path.exists('./yolo/yolov3.names'):
+        print('YOLO names file is missing.\n it can be downloaded at https://github.com/pjreddie/darknet/blob/master/data/coco.names')
+        exit(1)
+
+    yolo = YoloClassificator('./yolo/yolov3.cfg', './yolo/yolov3.weights', './yolo/yolov3.names')
 
     i = 1
     while True:
