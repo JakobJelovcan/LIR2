@@ -52,5 +52,5 @@ if __name__ == '__main__':
             image = Renderer.render(mat)
             Renderer.display(image)
         
-        classification = n_net.predict(mat)
-        print(f'Person present: {classification}')
+        classification = bool(n_net.predict(mat))
+        print(f'\rPerson present: {classification}')
