@@ -31,5 +31,3 @@ if __name__ == '__main__':
             matrix = np.array(np.split(np.array(data), 12))
             image = Renderer.render(matrix, colormap)
             cv2.imwrite(os.path.join(directory, f'ThermalImage{i}-Person({person}).jpg'), image)
-
-            

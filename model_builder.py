@@ -48,7 +48,3 @@ if __name__ == '__main__':
     n_net.store_model(output)
     if accuracy:
         print(f'Classification accuracy: {n_net.test()}')
-
-
-
-
