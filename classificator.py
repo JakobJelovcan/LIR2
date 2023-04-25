@@ -1,6 +1,7 @@
 import argparse
 import signal
-from os import path
+import os
+import time
 
 from pytorch.network import ConvolutionalNeuralNetwork
 from pytorch.network import LinearNeuralNetwork
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     display = bool(config['display'])
     model = config['model']
 
-    if not path.exists(source):
+    if not os.path.exists(source):
         print('The provided source file does not exist')
         exit(1)
 
@@ -47,10 +48,14 @@ if __name__ == '__main__':
     sensor = LIR2(serial, 234)
     n_net.load_model(source)
     while True:
+        start = time.time()
         mat = sensor.read_samples()
         if display:
             image = Renderer.render(mat)
             Renderer.display(image)
-        
+
         classification = bool(n_net.predict(mat))
         print(f'\rPerson present: {classification} ', end='')
+
+        duration = time.time() - start
+        time.sleep(max(0, 1 - duration))

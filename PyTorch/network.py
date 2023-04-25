@@ -1,21 +1,11 @@
-from numpy import vstack
-from torch import inference_mode
-from torch import from_numpy
-from torch import float
-from torch import device
-from torch.nn import Conv2d
-from torch.nn import Linear
-from torch.nn import MaxPool2d
-from torch.nn import Module
-from torch.nn import ReLU
-from torch.nn import Flatten
-from torch.nn import Sequential
-from torch.nn import Sigmoid
-from torch.nn import BCELoss
 from torch.cuda import is_available
 from torch.utils.data import DataLoader
 from torch.optim import Adam
 from sklearn.metrics import accuracy_score
+
+import numpy as np
+import torch
+from torch import nn
 
 from pytorch.dataset import _CSVDataset
 from pytorch.dataset import CSVDatasetLinear
@@ -26,8 +16,8 @@ import numpy as np
 
 
 
-class _ConvolutionalModel(Module):
-    def __init__(self, device:device, hidden_channels=24):
+class _ConvolutionalModel(nn.Module):
+    def __init__(self, device:torch.device, hidden_channels=24):
         super().__init__()
         #Layer sizes are marked as (N, C, H, W)
         #N: batch size
@@ -38,55 +28,72 @@ class _ConvolutionalModel(Module):
         #Layer1
         #Input -> (?, 1, 12, 16)
         #Output -> (?, ?, 6, 8)
-        self.layer1 = Sequential(
-                        Conv2d(in_channels=1, out_channels=hidden_channels, kernel_size=3, stride=1, padding=1, device=device),
-                        ReLU(),
-                        Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding=1, device=device),
-                        ReLU(),
-                        MaxPool2d(kernel_size=2, stride=2))
+        self.conv11 = nn.Conv2d(in_channels=1, out_channels=hidden_channels, kernel_size=3, stride=1, padding=1, device=device)
+        self.act11 = nn.ReLU()
+        self.conv12 = nn.Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding=1, device=device)
+        self.act12 = nn.ReLU()
+        self.pool11 = nn.MaxPool2d(kernel_size=2, stride=2)
+
         #Layer2
         #Input -> (?, ?, 6, 8)
         #Output -> (?, ?, 3, 4)
-        self.layer2 = Sequential(
-                        Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding=1, device=device),
-                        ReLU(),
-                        Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding=1, device=device),
-                        ReLU(),
-                        MaxPool2d(2))
+        self.conv21= nn.Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding=1, device=device)
+        self.act21 = nn.ReLU()
+        self.conv22 = nn.Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding=1, device=device)
+        self.act22 = nn.ReLU()
+        self.pool21 = nn.MaxPool2d(kernel_size=2)
         
         #Layer3
         #Input -> (?, ?, 3, 4)
         #Output -> float
-        self.layer3 = Sequential(
-                        Flatten(),
-                        Linear(in_features=3*4*hidden_channels, out_features=1, device=device),
-                        Sigmoid())
+
+        self.fl31 = nn.Flatten()
+        self.l31 = nn.Linear(in_features=3*4*hidden_channels, out_features=1, device=device)
+        self.act31 = nn.Sigmoid()
         
 
     def forward(self, input):
-        output = self.layer1(input)
-        output = self.layer2(output)
-        output = self.layer3(output)
+        #Layer1 input (?, 1, 12, 16) -> Conv2d -> ReLU -> Conv2d -> ReLU -> MaxPool2d -> (?, ?, 6, 8)
+        output = self.conv11(input)
+        output = self.act11(output)
+        output = self.conv12(output)
+        output = self.act12(output)
+        output = self.pool11(output)
+        #Layer2 (?, ?, 6, 8) -> Conv2d -> ReLU -> Conv2d -> ReLU -> MaxPool2d -> (?, ?, 3, 4)
+        output = self.conv21(output)
+        output = self.act21(output)
+        output = self.conv22(output)
+        output = self.act22(output)
+        output = self.pool21(output)
+        #Layer3 (?, ?, 3, 4) -> Flatten -> Linear -> Sigmoid -> (1)
+        output = self.fl31(output)
+        output = self.l31(output)
+        output = self.act31(output)
         return output
     
-class _LinearModel(Module):
-    def __init__(self, device:device):
+class _LinearModel(nn.Module):
+    def __init__(self, device:torch.device):
         super().__init__()
 
-        self.net = Sequential(
-                        Linear(in_features=192, out_features=100, device=device),
-                        ReLU(),
-                        Linear(in_features=100, out_features=100, device=device),
-                        ReLU(),
-                        Linear(in_features=100, out_features=1, device=device),
-                        Sigmoid())
+        self.l1 = nn.Linear(in_features=192, out_features=100, device=device)
+        self.act1 = nn.ReLU()
+        self.l2 = nn.Linear(in_features=100, out_features=100, device=device)
+        self.act2 = nn.ReLU()
+        self.l3 = nn.Linear(in_features=100, out_features=1, device=device)
+        self.act3 = nn.Sigmoid()
         
     def forward(self, input):
-        return self.net(input)
+        output = self.l1(input)
+        output = self.act1(output)
+        output = self.l2(output)
+        output = self.act2(output)
+        output = self.l3(output)
+        output = self.act3(output)
+        return output
 
 class _NeuralNetwork:
     def __init__(self):
-        self.device = device('cuda:0') if is_available() else device('cpu')
+        self.device = torch.device('cuda:0') if is_available() else torch.device('cpu')
         self.train_dl = None
         self.test_dl = None
         self.model = None
@@ -98,7 +105,7 @@ class _NeuralNetwork:
 
     def train(self, epoch_count:int=300, learning_rate:float=0.0001, weight_decay:float=0.0001, debug:bool=False) -> None:
         self.model.train()
-        criterion = BCELoss().to(self.device)
+        criterion = nn.BCELoss().to(self.device)
         optimizer = Adam(self.model.parameters(), lr=learning_rate, weight_decay=weight_decay)
         for epoch in range(epoch_count):
             if debug:
@@ -120,14 +127,14 @@ class _NeuralNetwork:
         '''
         self.model.eval()
         (predictions, actuals) = (list(), list())
-        with inference_mode():
+        with torch.inference_mode():
             for inputs, targets in self.test_dl:
                 predicted = self.model(inputs).cpu().detach().numpy().round()
                 actual = targets.cpu().numpy()
                 actual = actual.reshape((len(actual), 1))
                 predictions.append(predicted)
                 actuals.append(actual)
-            (predictions, actuals) = (vstack(predictions), vstack(actuals))
+            (predictions, actuals) = (np.vstack(predictions), np.vstack(actuals))
         return accuracy_score(actuals, predictions)
     
     def load_model(self, path : str) -> None:
@@ -191,10 +198,12 @@ class LinearNeuralNetwork(_NeuralNetwork):
             class (int): integer representing the predicted class
         '''
         self.model.eval()
-        with inference_mode():
-            data = from_numpy(mat.reshape(1, -1)).type(float).to(self.device)
-            accuracy = self.model(data).cpu().detach().numpy().round()[0]
-        return accuracy
+        with torch.inference_mode():
+            vector = mat.flatten()
+            tensor = torch.tensor(vector, dtype=torch.float, device=self.device)
+            prediction = self.model(tensor)
+            prediction_cpu = prediction.cpu().detach()
+        return prediction_cpu.numpy().round()[0]
 
 
 class ConvolutionalNeuralNetwork(_NeuralNetwork):
@@ -237,8 +246,8 @@ class ConvolutionalNeuralNetwork(_NeuralNetwork):
         '''
         #Reshape the matrix to (1, 1, 12, 16)
         self.model.eval()
-        with inference_mode():
-            mat.shape = (1,1, ) + mat.shape
-            data = from_numpy(mat).type(float).to(self.device)
-            accuracy = self.model(data).cpu().detach().numpy().round()[0]
-        return accuracy
+        with torch.inference_mode():
+            tensor = torch.tensor(mat, dtype=torch.float, device=self.device)
+            prediction = self.model(tensor.view((1,1,12,16)))
+            prediction_cpu = prediction.cpu().detach()
+        return prediction_cpu.numpy().round()[0]

@@ -85,16 +85,16 @@ if __name__ == '__main__':
 
     yolo = YoloClassificator('./yolo/yolov3.cfg', './yolo/yolov3.weights', './yolo/yolov3.names')
 
-    i = 1
     while True:
+        start = time.time()
         matrix = sensor.read_samples()
-        time.sleep(1)
-        (_, camera_image) = camera.read()
-        objects = yolo.classify(camera_image)
+        (_, image) = camera.read()
+        objects = yolo.classify(image)
         training_data.append((matrix, objects))
         if display:
-            image = Renderer.render(matrix)
-            Renderer.display(image)
+            Renderer.display(Renderer.render(matrix))
 
-        print(f"Frame: {i}, person present: {'person' in objects}")
-        i += 1
+        print(f'\rPerson present: {"person" in objects} ', end='')
+        duration = time.time()
+        time.sleep(max(0, 1 - duration))
+        
