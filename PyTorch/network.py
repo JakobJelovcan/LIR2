@@ -103,13 +103,13 @@ class _NeuralNetwork:
         self.train_dl = DataLoader(dataset=train, batch_size=batch_size, shuffle=True)
         self.test_dl = DataLoader(dataset=test, batch_size=batch_size, shuffle=False)
 
-    def train(self, epoch_count:int=300, learning_rate:float=0.0001, weight_decay:float=0.0001, debug:bool=False) -> None:
+    def train(self, epoch_count:int=300, learning_rate:float=0.0001, weight_decay:float=0.0001, info:bool=False) -> None:
         self.model.train()
         criterion = nn.BCELoss().to(self.device)
         optimizer = Adam(self.model.parameters(), lr=learning_rate, weight_decay=weight_decay)
         for epoch in range(epoch_count):
-            if debug:
-                print(f'Epoch: {epoch}')
+            if info:
+                print(f'\r{round((epoch/epoch_count)*100)}%', end='')
 
             for inputs, targets in self.train_dl:
                 pred = self.model(inputs)
@@ -176,7 +176,7 @@ class LinearNeuralNetwork(_NeuralNetwork):
         dataset = CSVDatasetLinear(path, self.device)
         super().load_data(dataset, batch_size, split)
 
-    def train(self, epoch_count:int=300, learning_rate:float=0.0001, weight_decay:float=0.0001, debug:bool=False) -> None:
+    def train(self, epoch_count:int=300, learning_rate:float=0.0001, weight_decay:float=0.0001, info:bool=False) -> None:
         '''Creates a new linear model and trains it on the provided training data. The criterion function used is BCELoss and the optimizer used is Adam
 
         Parameters:
@@ -188,7 +188,7 @@ class LinearNeuralNetwork(_NeuralNetwork):
             None
         '''
         self.model = _LinearModel(self.device)
-        super().train(epoch_count, learning_rate, weight_decay, debug)
+        super().train(epoch_count, learning_rate, weight_decay, info)
 
     def predict(self, mat : np.ndarray) -> int:
         '''Predict the class from the input data
@@ -223,7 +223,7 @@ class ConvolutionalNeuralNetwork(_NeuralNetwork):
         dataset = CSVDatasetConvolutional(path, self.device)
         super().load_data(dataset, batch_size, split)
 
-    def train(self, epoch_count:int=300, learning_rate:float=0.0001, weight_decay:float=0.0001, debug:bool=False) -> None:
+    def train(self, epoch_count:int=300, learning_rate:float=0.0001, weight_decay:float=0.0001, info:bool=False) -> None:
         '''Creates a new convolutional model and trains it on the provided training data. The criterion function used is BCELoss and the optimizer used is Adam
 
         Parameters:
@@ -235,7 +235,7 @@ class ConvolutionalNeuralNetwork(_NeuralNetwork):
             None
         '''
         self.model = _ConvolutionalModel(self.device, 48)
-        super().train(epoch_count, learning_rate, weight_decay, debug)
+        super().train(epoch_count, learning_rate, weight_decay, info)
 
     def predict(self, mat : np.ndarray) -> int:
         '''Predict the class from the input data

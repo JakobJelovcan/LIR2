@@ -5,10 +5,16 @@ import cv2
 import numpy as np
 import os
 
-_PROGRAM_DESCRIPTION = '''The program converts the raw data stored in the csv file in to images.'''
+_PROGRAM_DESCRIPTION = '''
+The program converts the raw data stored in the csv file in to images.
+Requirements:
+- opencv: https://pypi.org/project/opencv-python/
+- numpy: https://pypi.org/project/numpy/
+- minimalmodbus: https://pypi.org/project/minimalmodbus/
+- serial: https://pypi.org/project/pyserial/'''
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='Converter', description=_PROGRAM_DESCRIPTION, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(prog='Converter', description=_PROGRAM_DESCRIPTION, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('file', help='Path to the CSV file containing data from the LIR2 sensor')
     parser.add_argument('-f', '--format', help='An integer representing a cv2 colormap (-1 for grayscale) https://docs.opencv.org/3.4/d3/d50/group__imgproc__colormap.html')
     parser.add_argument('-d', '--directory', help='Path to the directory in which the images should be stored')

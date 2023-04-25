@@ -9,9 +9,17 @@ from lir2.lir2 import LIR2
 from lir2.lir2_renderer import Renderer
 from yolo.yolo_classificator import YoloClassificator
 
-_PROGRAM_DESCRIPTION = '''The program collects the data from the sensor and extends it with the classification aquired from the image.
-                         The image from the camera is classified using the YOLO classification model.
-                         A camera is required for this program to work'''
+_PROGRAM_DESCRIPTION = '''
+The program collects the data from the sensor and extends it with the classification aquired from the image.
+The image from the camera is classified using the YOLO classification model.
+A camera is required for this program to work.
+The program can be closed with SIGINT (ctrl+c on windows)
+
+Requirements:
+    - opencv: https://pypi.org/project/opencv-python/
+    - numpy: https://pypi.org/project/numpy/
+    - minimalmodbus: https://pypi.org/project/minimalmodbus/
+    - serial: https://pypi.org/project/pyserial/'''
 
 output_file_path = None
 training_data = []
@@ -54,7 +62,7 @@ def write_to_csv(writer, data:list) -> None:
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, handler)
 
-    parser = argparse.ArgumentParser(prog='Trainer', description=_PROGRAM_DESCRIPTION, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(prog='Trainer', description=_PROGRAM_DESCRIPTION, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('-s', '--serial', help='Serial port onto which the sensor is connected', default='COM3')
     parser.add_argument('-d', '--display', help='Display the thermal image on the screen', action='store_true', default=False)
     parser.add_argument('-f', '--file', help='Path to the file in which the data should be stored (if the file exists the data will be appended to the bottom, default: data/training_data.csv)', default='./data/training_data.csv')
@@ -97,4 +105,3 @@ if __name__ == '__main__':
         print(f'\rPerson present: {"person" in objects} ', end='')
         duration = time.time()
         time.sleep(max(0, 1 - duration))
-        

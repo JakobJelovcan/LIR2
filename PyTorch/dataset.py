@@ -48,7 +48,7 @@ class CSVDatasetLinear(_CSVDataset):
         df = read_csv(path)
 
         #Convert data to a tensor of floats on the specified device
-        self.values = torch.from_numpy(df.values[:, :-1].astype('float32')).type(float).to(device)
+        self.values = torch.from_numpy(df.values[:, :-1].astype('float32')).type(torch.float).to(device)
 
         #Encode the target clases as numeric values and convert them to a tensor of floats on the specified device
         classes = LabelEncoder().fit_transform(df.values[:, -1]).reshape((len(df), 1))
