@@ -1,4 +1,5 @@
 from numpy import vstack
+from torch import inference_mode
 from torch import from_numpy
 from torch import float
 from torch import device
@@ -96,6 +97,7 @@ class _NeuralNetwork:
         self.test_dl = DataLoader(dataset=test, batch_size=batch_size, shuffle=False)
 
     def train(self, epoch_count:int=300, learning_rate:float=0.0001, weight_decay:float=0.0001, debug:bool=False) -> None:
+        self.model.train()
         criterion = BCELoss().to(self.device)
         optimizer = Adam(self.model.parameters(), lr=learning_rate, weight_decay=weight_decay)
         for epoch in range(epoch_count):
@@ -116,14 +118,16 @@ class _NeuralNetwork:
         Returns:
             accuracy (float): classification accuracy of the model
         '''
+        self.model.eval()
         (predictions, actuals) = (list(), list())
-        for inputs, targets in self.test_dl:
-            predicted = self.model(inputs).cpu().detach().numpy().round()
-            actual = targets.cpu().numpy()
-            actual = actual.reshape((len(actual), 1))
-            predictions.append(predicted)
-            actuals.append(actual)
-        (predictions, actuals) = (vstack(predictions), vstack(actuals))
+        with inference_mode():
+            for inputs, targets in self.test_dl:
+                predicted = self.model(inputs).cpu().detach().numpy().round()
+                actual = targets.cpu().numpy()
+                actual = actual.reshape((len(actual), 1))
+                predictions.append(predicted)
+                actuals.append(actual)
+            (predictions, actuals) = (vstack(predictions), vstack(actuals))
         return accuracy_score(actuals, predictions)
     
     def load_model(self, path : str) -> None:
@@ -186,8 +190,11 @@ class LinearNeuralNetwork(_NeuralNetwork):
         Returns:
             class (int): integer representing the predicted class
         '''
-        data = from_numpy(mat.reshape(1, -1)).type(float).to(self.device)
-        return self.model(data).cpu().detach().numpy().round()[0]
+        self.model.eval()
+        with inference_mode():
+            data = from_numpy(mat.reshape(1, -1)).type(float).to(self.device)
+            accuracy = self.model(data).cpu().detach().numpy().round()[0]
+        return accuracy
 
 
 class ConvolutionalNeuralNetwork(_NeuralNetwork):
@@ -229,6 +236,9 @@ class ConvolutionalNeuralNetwork(_NeuralNetwork):
             class (int): integer representing the predicted class
         '''
         #Reshape the matrix to (1, 1, 12, 16)
-        mat.shape = (1,1, ) + mat.shape
-        data = from_numpy(mat).type(float).to(self.device)
-        return self.model(data).cpu().detach().numpy().round()[0]
+        self.model.eval()
+        with inference_mode():
+            mat.shape = (1,1, ) + mat.shape
+            data = from_numpy(mat).type(float).to(self.device)
+            accuracy = self.model(data).cpu().detach().numpy().round()[0]
+        return accuracy
