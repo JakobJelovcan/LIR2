@@ -8,6 +8,7 @@ _PROGRAM_DESCRIPTION = '''
 The program trains and stores a neural network model using the raw data from the sensor stored in a csv file.
 Requirements:
     - pytorch: https://pytorch.org/get-started/locally/
+    - torchmetrics: https://pypi.org/project/torchmetrics/
     - opencv: https://pypi.org/project/opencv-python/
     - numpy: https://pypi.org/project/numpy/
     - minimalmodbus: https://pypi.org/project/minimalmodbus/

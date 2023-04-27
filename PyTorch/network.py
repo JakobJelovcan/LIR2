@@ -2,6 +2,7 @@ from torch.cuda import is_available
 from torch.utils.data import DataLoader
 from torch.optim import Adam
 from sklearn.metrics import accuracy_score
+from torchmetrics import Accuracy
 
 import numpy as np
 import torch
@@ -49,7 +50,6 @@ class _ConvolutionalModel(nn.Module):
 
         self.fl31 = nn.Flatten()
         self.l31 = nn.Linear(in_features=3*4*hidden_channels, out_features=1, device=device)
-        self.act31 = nn.Sigmoid()
         
 
     def forward(self, input):
@@ -68,7 +68,6 @@ class _ConvolutionalModel(nn.Module):
         #Layer3 (?, ?, 3, 4) -> Flatten -> Linear -> Sigmoid -> (1)
         output = self.fl31(output)
         output = self.l31(output)
-        output = self.act31(output)
         return output
     
 class _LinearModel(nn.Module):
@@ -80,7 +79,6 @@ class _LinearModel(nn.Module):
         self.l2 = nn.Linear(in_features=100, out_features=100, device=device)
         self.act2 = nn.ReLU()
         self.l3 = nn.Linear(in_features=100, out_features=1, device=device)
-        self.act3 = nn.Sigmoid()
         
     def forward(self, input):
         output = self.l1(input)
@@ -88,7 +86,6 @@ class _LinearModel(nn.Module):
         output = self.l2(output)
         output = self.act2(output)
         output = self.l3(output)
-        output = self.act3(output)
         return output
 
 class _NeuralNetwork:
@@ -105,15 +102,16 @@ class _NeuralNetwork:
 
     def train(self, epoch_count:int=300, learning_rate:float=0.0001, weight_decay:float=0.0001, info:bool=False) -> None:
         self.model.train()
-        criterion = nn.BCELoss().to(self.device)
+        loss_fn = nn.BCELoss().to(self.device)
         optimizer = Adam(self.model.parameters(), lr=learning_rate, weight_decay=weight_decay)
         for epoch in range(epoch_count):
             if info:
                 print(f'\r{round((epoch/epoch_count)*100)}%', end='')
 
             for inputs, targets in self.train_dl:
-                pred = self.model(inputs)
-                loss = criterion(pred, targets)
+                y_logits = self.model(inputs)
+                y_prob = torch.sigmoid(y_logits)
+                loss = loss_fn(y_prob, targets)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
@@ -126,16 +124,17 @@ class _NeuralNetwork:
             accuracy (float): classification accuracy of the model
         '''
         self.model.eval()
-        (predictions, actuals) = (list(), list())
+        acc_fn = Accuracy(task='binary')
+        (preds, actuals) = (list(), list())
         with torch.inference_mode():
             for inputs, targets in self.test_dl:
-                predicted = self.model(inputs).cpu().detach().numpy().round()
-                actual = targets.cpu().numpy()
-                actual = actual.reshape((len(actual), 1))
-                predictions.append(predicted)
+                y_logits = self.model(inputs).squeeze().cpu()
+                y_prob = torch.sigmoid(y_logits)
+                y_pred = torch.round(y_prob)
+                actual = targets.squeeze().cpu()
+                preds.append(y_pred)
                 actuals.append(actual)
-            (predictions, actuals) = (np.vstack(predictions), np.vstack(actuals))
-        return accuracy_score(actuals, predictions)
+        return acc_fn(torch.hstack(preds), torch.hstack(actuals))
     
     def load_model(self, path : str) -> None:
         '''Loads the model from a TorchScript file

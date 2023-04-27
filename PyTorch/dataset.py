@@ -5,8 +5,8 @@ from pandas import read_csv
 
 class _CSVDataset(torch.utils.data.Dataset):
     def __init__(self):
-        self.values = None
-        self.classes = None
+        self.X = None   #Matrix of n × 192 temperatures
+        self.y = None   #Vector of classifications
 
     def __len__(self) -> int:
         '''Returns the number of rows in the matrix
@@ -15,7 +15,7 @@ class _CSVDataset(torch.utils.data.Dataset):
         Returns:
             length (int): number of rows in the matrix
         '''
-        return len(self.values)
+        return len(self.X)
     
 
     def __getitem__(self, index) -> list:
@@ -26,7 +26,7 @@ class _CSVDataset(torch.utils.data.Dataset):
         Returns:
             item (list): a list containing the selected row of values and the corresponding class
         '''
-        return [self.values[index], self.classes[index]]
+        return [self.X[index], self.y[index]]
     
 
     def get_splits(self, split=0.33) -> list:
@@ -48,11 +48,11 @@ class CSVDatasetLinear(_CSVDataset):
         df = read_csv(path)
 
         #Convert data to a tensor of floats on the specified device
-        self.values = torch.from_numpy(df.values[:, :-1].astype('float32')).type(torch.float).to(device)
+        self.X = torch.from_numpy(df.values[:, :-1].astype('float32')).type(torch.float).to(device)
 
         #Encode the target clases as numeric values and convert them to a tensor of floats on the specified device
-        classes = LabelEncoder().fit_transform(df.values[:, -1]).reshape((len(df), 1))
-        self.classes = torch.from_numpy(classes).type(torch.float).to(device)
+        y = LabelEncoder().fit_transform(df.values[:, -1]).reshape((len(df), 1))
+        self.y = torch.from_numpy(y.astype('float32')).type(torch.float).to(device)
 
     
 class CSVDatasetConvolutional(_CSVDataset):
@@ -62,10 +62,10 @@ class CSVDatasetConvolutional(_CSVDataset):
         df = read_csv(path)
 
         #Convert each row in to a 3D matrix of float32 values. Resulting matrix has a depth of one (one color channel), width of 16 and height of 12
-        values = np.array([row.reshape((1, 12, 16)) for row in df.values[:, :-1].astype('float32')])
-        self.values = torch.from_numpy(values).type(torch.float).to(device)
+        X = np.array([row.reshape((1, 12, 16)) for row in df.values[:, :-1]])
+        self.X = torch.from_numpy(X.astype('float32')).type(torch.float).to(device)
 
         #Encode the target clases as numeric values and convert them to float32. Then reshape them in to a 2D matrix with one column
-        classes = LabelEncoder().fit_transform(df.values[:, -1])
-        classes = classes.reshape((len(classes), 1))
-        self.classes = torch.from_numpy(classes).type(torch.float).to(device)
+        y = LabelEncoder().fit_transform(df.values[:, -1])
+        y = y.reshape((len(y), 1))
+        self.y = torch.from_numpy(y.astype('float32')).type(torch.float).to(device)
