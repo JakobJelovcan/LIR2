@@ -108,10 +108,10 @@ class _NeuralNetwork:
             if info:
                 print(f'\r{round((epoch/epoch_count)*100)}%', end='')
 
-            for inputs, targets in self.train_dl:
-                y_logits = self.model(inputs)
+            for X, y in self.train_dl:
+                y_logits = self.model(X)
                 y_prob = torch.sigmoid(y_logits)
-                loss = loss_fn(y_prob, targets)
+                loss = loss_fn(y_prob, y)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
@@ -127,11 +127,11 @@ class _NeuralNetwork:
         acc_fn = Accuracy(task='binary')
         (preds, actuals) = (list(), list())
         with torch.inference_mode():
-            for inputs, targets in self.test_dl:
-                y_logits = self.model(inputs).squeeze().cpu()
+            for X, y in self.test_dl:
+                y_logits = self.model(X).squeeze().cpu()
                 y_prob = torch.sigmoid(y_logits)
                 y_pred = torch.round(y_prob)
-                actual = targets.squeeze().cpu()
+                actual = y.squeeze().cpu()
                 preds.append(y_pred)
                 actuals.append(actual)
         return acc_fn(torch.hstack(preds), torch.hstack(actuals))

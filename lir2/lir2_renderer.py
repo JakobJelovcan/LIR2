@@ -23,7 +23,7 @@ class Renderer:
         matrix_u8 = cv2.normalize(scaled_image, matrix_u8, 0, 255, cv2.NORM_MINMAX)
         matrix_u8 = np.uint8(matrix_u8)
         return matrix_u8 if colormap == -1 else cv2.applyColorMap(matrix_u8, colormap)
-
+    
     def display(image:np.ndarray) -> int:
         '''Display the image on the screen, and returns the pressed key
 
