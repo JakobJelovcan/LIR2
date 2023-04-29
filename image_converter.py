@@ -8,10 +8,10 @@ import os
 _PROGRAM_DESCRIPTION = '''
 The program converts the raw data stored in the csv file in to images.
 Requirements:
-- opencv: https://pypi.org/project/opencv-python/
-- numpy: https://pypi.org/project/numpy/
-- minimalmodbus: https://pypi.org/project/minimalmodbus/
-- serial: https://pypi.org/project/pyserial/'''
+    - opencv: https://pypi.org/project/opencv-python/
+    - numpy: https://pypi.org/project/numpy/
+    - minimalmodbus: https://pypi.org/project/minimalmodbus/
+    - serial: https://pypi.org/project/pyserial/'''
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='Image converter', description=_PROGRAM_DESCRIPTION, formatter_class=argparse.RawDescriptionHelpFormatter)

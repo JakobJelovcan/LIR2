@@ -233,7 +233,7 @@ class ConvolutionalNeuralNetwork(_NeuralNetwork):
         Returns:
             None
         '''
-        self.model = _ConvolutionalModel(self.device, 48)
+        self.model = _ConvolutionalModel(self.device)
         super().train(epoch_count, learning_rate, weight_decay, info)
 
     def predict(self, mat : np.ndarray) -> int:

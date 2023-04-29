@@ -4,6 +4,13 @@ import os
 from pytorch.network import ConvolutionalNeuralNetwork
 from pytorch.network import LinearNeuralNetwork
 
+_PROGRAM_DESCRIPTION = '''
+The program converts amodel from TorchScript to onnx format
+Requirements:
+    - pytorch: https://pytorch.org/get-started/locally/
+    - onnx: https://pypi.org/project/onnx/
+    '''
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('source', help='Path to the source model file (.pt)')
@@ -39,7 +46,7 @@ if __name__ == '__main__':
 
     if format == 'onnx':
         torch.onnx.export(n_net.model,
-                        X,
+                        X.to(n_net.device),
                         output,
                         export_params=True,
                         do_constant_folding=True,

@@ -11,8 +11,7 @@ Requirements:
     - torchmetrics: https://pypi.org/project/torchmetrics/
     - opencv: https://pypi.org/project/opencv-python/
     - numpy: https://pypi.org/project/numpy/
-    - minimalmodbus: https://pypi.org/project/minimalmodbus/
-    - serial: https://pypi.org/project/pyserial/'''
+    - pandas: https://pypi.org/project/pandas/'''
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( prog='Model builder', description=_PROGRAM_DESCRIPTION, formatter_class=argparse.RawDescriptionHelpFormatter)
