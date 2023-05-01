@@ -30,7 +30,8 @@ class LIR2:
             return -1
 
     def read_samples(self) -> np.ndarray:
-        '''Read samples from all 192 pixels of the sensor
+        '''Read samples from all 192 pixels of the sensor.
+        If an IOerror occurs during the reading of the values the last successfuly read values are returned.
 
         Parameters:
         Returns:
