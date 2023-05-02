@@ -99,9 +99,9 @@ if __name__ == '__main__':
         (_, image) = camera.read()
         objects = yolo.classify(image)
         training_data.append((matrix, objects))
+        duration = time.time()
+        time.sleep(max(0, 1 - duration))
         if display:
             Renderer.display(Renderer.render(matrix))
 
         print(f'\rPerson present: {"person" in objects} ', end='')
-        duration = time.time()
-        time.sleep(max(0, 1 - duration))

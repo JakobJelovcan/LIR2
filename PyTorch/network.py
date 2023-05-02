@@ -200,9 +200,10 @@ class LinearNeuralNetwork(_NeuralNetwork):
         with torch.inference_mode():
             vector = mat.flatten()
             tensor = torch.tensor(vector, dtype=torch.float, device=self.device)
-            prediction = self.model(tensor)
-            prediction_cpu = prediction.cpu().detach()
-        return prediction_cpu.numpy().round()[0]
+            logits = self.model(tensor).squeeze().cpu()
+            prob = torch.sigmoid(logits)
+            pred = torch.round(prob)
+        return pred.item()
 
 
 class ConvolutionalNeuralNetwork(_NeuralNetwork):
@@ -247,6 +248,7 @@ class ConvolutionalNeuralNetwork(_NeuralNetwork):
         self.model.eval()
         with torch.inference_mode():
             tensor = torch.tensor(mat, dtype=torch.float, device=self.device)
-            prediction = self.model(tensor.view((1,1,12,16)))
-            prediction_cpu = prediction.cpu().detach()
-        return prediction_cpu.numpy().round()[0]
+            logits = self.model(tensor.view((1,1,12,16))).squeeze().cpu()
+            prob = torch.sigmoid(logits)
+            pred = torch.round(prob)
+        return pred.item()

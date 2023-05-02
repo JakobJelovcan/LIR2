@@ -59,12 +59,10 @@ if __name__ == '__main__':
     while True:
         start = time.time()
         mat = sensor.read_samples()
+        duration = time.time() - start
+        classification = bool(n_net.predict(mat))
+        time.sleep(max(0, 1 - duration))
         if display:
             image = Renderer.render(mat)
             Renderer.display(image)
-
-        classification = bool(n_net.predict(mat))
         print(f'\rPerson present: {classification} ', end='')
-
-        duration = time.time() - start
-        time.sleep(max(0, 1 - duration))
