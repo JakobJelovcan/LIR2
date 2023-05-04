@@ -50,6 +50,7 @@ class _ConvolutionalModel(nn.Module):
 
         self.fl31 = nn.Flatten()
         self.l31 = nn.Linear(in_features=3*4*hidden_channels, out_features=1, device=device)
+        self.act31 = nn.Sigmoid()
         
 
     def forward(self, input):
@@ -68,6 +69,7 @@ class _ConvolutionalModel(nn.Module):
         #Layer3 (?, ?, 3, 4) -> Flatten -> Linear -> Sigmoid -> (1)
         output = self.fl31(output)
         output = self.l31(output)
+        output = self.act31(output)
         return output
     
 class _LinearModel(nn.Module):
@@ -79,6 +81,7 @@ class _LinearModel(nn.Module):
         self.l2 = nn.Linear(in_features=100, out_features=100, device=device)
         self.act2 = nn.ReLU()
         self.l3 = nn.Linear(in_features=100, out_features=1, device=device)
+        self.act3 = nn.Sigmoid()
         
     def forward(self, input):
         output = self.l1(input)
@@ -86,6 +89,7 @@ class _LinearModel(nn.Module):
         output = self.l2(output)
         output = self.act2(output)
         output = self.l3(output)
+        output = self.act3(output)
         return output
 
 class _NeuralNetwork:
@@ -109,8 +113,7 @@ class _NeuralNetwork:
                 print(f'\r{round((epoch/epoch_count)*100)}%', end='')
 
             for X, y in self.train_dl:
-                y_logits = self.model(X)
-                y_prob = torch.sigmoid(y_logits)
+                y_prob = self.model(X)
                 loss = loss_fn(y_prob, y)
                 optimizer.zero_grad()
                 loss.backward()
@@ -128,8 +131,7 @@ class _NeuralNetwork:
         (preds, actuals) = (list(), list())
         with torch.inference_mode():
             for X, y in self.test_dl:
-                y_logits = self.model(X).squeeze().cpu()
-                y_prob = torch.sigmoid(y_logits)
+                y_prob = self.model(X).squeeze().cpu()
                 y_pred = torch.round(y_prob)
                 actual = y.squeeze().cpu()
                 preds.append(y_pred)
@@ -200,8 +202,7 @@ class LinearNeuralNetwork(_NeuralNetwork):
         with torch.inference_mode():
             vector = mat.flatten()
             tensor = torch.tensor(vector, dtype=torch.float, device=self.device)
-            logits = self.model(tensor).squeeze().cpu()
-            prob = torch.sigmoid(logits)
+            prob = self.model(tensor).squeeze().cpu()
             pred = torch.round(prob)
         return pred.item()
 
@@ -248,7 +249,6 @@ class ConvolutionalNeuralNetwork(_NeuralNetwork):
         self.model.eval()
         with torch.inference_mode():
             tensor = torch.tensor(mat, dtype=torch.float, device=self.device)
-            logits = self.model(tensor.view((1,1,12,16))).squeeze().cpu()
-            prob = torch.sigmoid(logits)
+            prob = self.model(tensor.view((1,1,12,16))).squeeze().cpu()
             pred = torch.round(prob)
         return pred.item()
