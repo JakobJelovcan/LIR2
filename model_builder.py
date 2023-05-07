@@ -15,7 +15,7 @@ Requirements:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( prog='Model builder', description=_PROGRAM_DESCRIPTION, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('source', help='Path to the csv file containint the training data')
+    parser.add_argument('source', help='Path to the csv file containing the training data')
     parser.add_argument('-o', '--output', help='Path to the file into which the trained model shuild be stored')
     parser.add_argument('-s', '--split', help='Share of the cases to be used as test data (default: 0)', default=0)
     parser.add_argument('-a', '--accuracy', help='Print accuracy result (split has to be more than 0)', action='store_true', default=False)
